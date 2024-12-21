@@ -1,0 +1,40 @@
+.container {
+    display: flex;
+    height: 100vh;
+    flex-direction: column;
+}
+
+.editor {
+    display: flex;
+    flex: 1;
+}
+
+.textarea {
+    width: 50%;
+    padding: 10px;
+}
+
+.markdown-body {
+    width: 50%;
+    padding: 10px;
+    border-left: 1px solid #ccc;
+}
+
+.footer {
+    padding: 10px;
+    border-top: 1px solid #ccc;
+}
+
+.button {
+    background-color: #007BFF;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.button:hover {
+    background-color: #0056b3;
+}

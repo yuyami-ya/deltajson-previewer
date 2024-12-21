@@ -1,0 +1,26 @@
+.container {
+    display: flex;
+    height: 100vh;
+    flex-direction: column;
+}
+
+.editor {
+    display: flex;
+    flex: 1;
+}
+
+.textarea {
+    width: 50%;
+    padding: 10px;
+}
+
+.markdown-body {
+    width: 50%;
+    padding: 10px;
+    border-left: 1px solid #ccc;
+}
+
+.footer {
+    padding: 10px;
+    border-top: 1px solid #ccc;
+}

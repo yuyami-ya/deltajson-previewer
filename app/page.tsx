@@ -4,8 +4,10 @@ import { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import breaks from 'remark-breaks';
 import remarkGfm from 'remark-gfm';
+import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html'; 
 import 'github-markdown-css/github-markdown.css';
 import '../styles/markdownStyles.css';
+import '../styles.css';
 
 interface Mention {
     id: string;
@@ -72,7 +74,7 @@ function convertToMarkdown(delta: Delta): string {
                 markdownLines.push(`<u>${text}</u>`);
             } else if (attributes.link) {
                 markdownLines.push(`[${text}](${attributes.link})`);
-            } else if (attributes['code-block']) {
+            } else if (attributes.code_block) {
                 markdownLines.push(`\`\`\`\n${text}\n\`\`\``);
             } else if (attributes.blockquote) {
                 markdownLines.push(`> ${text}`);
@@ -90,10 +92,9 @@ function convertToMarkdown(delta: Delta): string {
             } else {
                 markdownLines.push(text);
             }
-            console.log(markdownLines);
         } catch (e) {
             console.error(e);
-            markdownLines.push(op);
+            markdownLines.push(JSON.stringify(op));
         }
     });
 
@@ -101,168 +102,159 @@ function convertToMarkdown(delta: Delta): string {
 }
 
 export default function Home() {
-    // const [body, setBody] = useState<Delta>({
-    //     ops: [
-    //         { insert: { mention: { id: "123", value: "田中美和" } } },
-    //         { insert: "First open this link, then open this link." },
-    //         { insert: "\n" },
-    //         { insert: "https://sample.com/1", attributes: { link: "https://sample.com/1" } },
-    //         { insert: "\n" },
-    //         { insert: "https://sample.com/2", attributes: { link: "https://sample.com/2" } },
-    //         { insert: "\n" },
-    //         { insert: "Finally, please open the following link:" },
-    //         { insert: "\n" },
-    //         { insert: "https://sample.com/3", attributes: { link: "https://sample.com/3" } },
-    //         { insert: "\n" }
-    //     ]
-    // });
     const [body, setBody] = useState<Delta>({
-            "ops": [
-                {
+        "ops": [
+            {
                 "insert": "This is a sample"
-                },
-                {
+            },
+            {
                 "insert": "\n"
-                },
-                {
+            },
+            {
                 "insert": "Parent List 1"
-                },
-                {
+            },
+            {
                 "insert": "\n",
                 "attributes": {
                     "list": "bullet"
                 }
-                },
-                {
+            },
+            {
                 "insert": "Parent List 2 When you insert a link in a list, a link is added to the child element."
-                },
-                {
+            },
+            {
                 "insert": "\n",
                 "attributes": {
                     "list": "bullet"
                 }
-                },
-                {
+            },
+            {
                 "insert": "https://sample.com/1",
                 "attributes": {
                     "link": "https://sample.com/1"
                 }
-                },
-                {
+            },
+            {
                 "insert": "\n",
                 "attributes": {
                     "list": "bullet",
                     "indent": 1
                 }
-                },
-                {
+            },
+            {
                 "insert": "Parent List 3"
-                },
-                {
+            },
+            {
                 "insert": "\n",
                 "attributes": {
                     "list": "bullet"
                 }
-                },
-                {
+            },
+            {
                 "insert": "Child List 1"
-                },
-                {
+            },
+            {
                 "insert": "\n",
                 "attributes": {
                     "list": "bullet",
                     "indent": 1
                 }
-                },
-                {
+            },
+            {
                 "insert": "Child List 2 Underline style will be reset"
-                },
-                {
+            },
+            {
                 "insert": "\n",
                 "attributes": {
                     "list": "bullet",
                     "indent": 1
                 }
-                },
-                {
+            },
+            {
                 "insert": "Child List 3"
-                },
-                {
+            },
+            {
                 "insert": "\n",
                 "attributes": {
                     "list": "bullet",
                     "indent": 1
                 }
-                },
-                {
+            },
+            {
                 "insert": ""
-                },
-                {
+            },
+            {
                 "insert": "\n"
-                },
-                {
+            },
+            {
                 "insert": "First Number List"
-                },
-                {
+            },
+            {
                 "insert": "\n",
                 "attributes": {
                     "list": "ordered"
                 }
-                },
-                {
+            },
+            {
                 "insert": "Second Number List"
-                },
-                {
+            },
+            {
                 "insert": "\n",
                 "attributes": {
                     "list": "ordered"
                 }
-                },
-                {
+            },
+            {
                 "insert": "Number list child elements"
-                },
-                {
+            },
+            {
                 "insert": "\n",
                 "attributes": {
                     "list": "ordered",
                     "indent": 1
                 }
-                },
-                {
+            },
+            {
                 "insert": "Bold will also be reset"
-                },
-                {
+            },
+            {
                 "insert": "\n"
-                }
-            ]
+            }
+        ]
     });
 
-    let markdown = "empty"
-    try {
-        markdown = convertToMarkdown(body);
-    } catch (e) {
-        console.error(e);
-        markdown = `error: ${e}`
-    }
-    // markdown = `
-    // # タイトル
-    // ## 見出し
-    // 本文の内容です。**太字**や*イタリック*も使えます。
-    // `;
+    const [markdown, setMarkdown] = useState<string>("empty");
+
+    const handleConvertToMarkdown = () => {
+        try {
+            const convertedMarkdown = convertToMarkdown(body);
+            setMarkdown(convertedMarkdown);
+        } catch (e) {
+            console.error(e);
+            setMarkdown(`error: ${e}`);
+        }
+    };
+
+    const convertToMarkdown = () => {
+        const convertedMarkdown = convertToMarkdown(body);
+        setMarkdown(convertedMarkdown);
+    };
+
 
     return (
-        <div style={{ display: 'flex', height: '100vh', flexDirection: 'column' }}>
-            <div style={{ display: 'flex', flex: 1 }}>
+        <div className="container">
+            <div className="editor">
                 <textarea
-                    style={{ width: '50%', padding: '10px' }}
+                    className="textarea"
                     value={JSON.stringify(body, null, 2)}
                     onChange={(e) => setBody(JSON.parse(e.target.value))}
                 />
-                <div className="markdown-body" style={{ width: '50%', padding: '10px', borderLeft: '1px solid #ccc' }}>
+                <div className="markdown-body">
                     <ReactMarkdown remarkPlugins={[remarkGfm, breaks]}>{markdown}</ReactMarkdown>
                 </div>
             </div>
-            <div style={{ padding: '10px', borderTop: '1px solid #ccc' }}>
+            <div className="footer">
+                <button className="button" onClick={handleConvertToMarkdown}>Convert to Markdown</button>
                 <pre>{markdown}</pre>
             </div>
         </div>
