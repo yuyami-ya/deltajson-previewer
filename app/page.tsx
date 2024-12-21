@@ -1,11 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import ReactMarkdown from 'react-markdown';
-import breaks from 'remark-breaks';
-import remarkGfm from 'remark-gfm';
 import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html';
-import 'github-markdown-css/github-markdown.css';
 import '../styles/markdownStyles.css';
 import '../styles.css';
 
@@ -99,6 +95,11 @@ function convertToMarkdown(delta: Delta): string {
     });
 
     return markdownLines.join('\n');
+}
+
+function convertDeltaToHtml(delta: Delta): string {
+    const converter = new QuillDeltaToHtmlConverter(delta.ops, {});
+    return converter.convert();
 }
 
 export default function Home() {
@@ -224,14 +225,19 @@ export default function Home() {
     });
 
     const [markdown, setMarkdown] = useState<string>("empty");
+    const [html, setHtml] = useState<string>("");
 
-    const handleConvertToMarkdown = () => {
+    const handleConvert = () => {
         try {
             const convertedMarkdown = convertToMarkdown(body);
             setMarkdown(convertedMarkdown);
+
+            const convertedHtml = convertDeltaToHtml(body);
+            setHtml(convertedHtml);
         } catch (e) {
             console.error(e);
             setMarkdown(`error: ${e}`);
+            setHtml(`error: ${e}`);
         }
     };
 
@@ -243,13 +249,11 @@ export default function Home() {
                     value={JSON.stringify(body, null, 2)}
                     onChange={(e) => setBody(JSON.parse(e.target.value))}
                 />
-                <div className="markdown-body">
-                    <ReactMarkdown remarkPlugins={[remarkGfm, breaks]}>{markdown}</ReactMarkdown>
-                </div>
+                <div className="html-output" dangerouslySetInnerHTML={{ __html: html }} />
             </div>
             <div className="footer">
-                <button className="button" onClick={handleConvertToMarkdown}>Convert to Markdown</button>
-                <pre>{markdown}</pre>
+                <button className="button" onClick={handleConvert}>Convert</button>
+                {/* <pre>{markdown}</pre> */}
             </div>
         </div>
     );
