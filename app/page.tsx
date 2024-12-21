@@ -4,7 +4,7 @@ import { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import breaks from 'remark-breaks';
 import remarkGfm from 'remark-gfm';
-import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html'; 
+import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html';
 import 'github-markdown-css/github-markdown.css';
 import '../styles/markdownStyles.css';
 import '../styles.css';
@@ -234,12 +234,6 @@ export default function Home() {
             setMarkdown(`error: ${e}`);
         }
     };
-
-    const convertToMarkdown = () => {
-        const convertedMarkdown = convertToMarkdown(body);
-        setMarkdown(convertedMarkdown);
-    };
-
 
     return (
         <div className="container">
