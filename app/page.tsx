@@ -10,6 +10,8 @@ interface Mention {
     value: string;
 }
 
+
+
 interface Insert {
     mention?: Mention;
     styled_mention?: Mention;
@@ -42,60 +44,6 @@ interface Delta {
     ops: OpsItem[];
 }
 
-function convertToMarkdown(delta: Delta): string {
-    const markdownLines: string[] = [];
-
-    delta.ops.forEach((op: OpsItem) => {
-        try {
-            if (typeof op.insert === 'object') {
-                if (op.insert.mention) {
-                    markdownLines.push(`@${op.insert.mention.value}`);
-                } else {
-                    markdownLines.push(JSON.stringify(op));
-                }
-                return;
-            }
-
-            const text = op.insert.trim();
-            const attributes = op.attributes || {};
-
-            if (attributes.header) {
-                const level = attributes.header;
-                markdownLines.push(`${'#'.repeat(level)} ${text}`);
-            } else if (attributes.bold) {
-                markdownLines.push(`**${text}**`);
-            } else if (attributes.italic) {
-                markdownLines.push(`*${text}*`);
-            } else if (attributes.underline) {
-                markdownLines.push(`<u>${text}</u>`);
-            } else if (attributes.link) {
-                markdownLines.push(`[${text}](${attributes.link})`);
-            } else if (attributes.code_block) {
-                markdownLines.push(`\`\`\`\n${text}\n\`\`\``);
-            } else if (attributes.blockquote) {
-                markdownLines.push(`> ${text}`);
-            } else if (attributes.image) {
-                markdownLines.push(`![Image](${attributes.image})`);
-            } else if (attributes.list) {
-                const listType = attributes.list;
-                const indent = attributes.indent || 0;
-                const spaces = ' '.repeat(indent * 4);
-                if (listType === 'bullet') {
-                    markdownLines[-1] = `${spaces}- ${markdownLines[-1]}`;
-                } else if (listType === 'ordered') {
-                    markdownLines[-1] = `${spaces}1. ${markdownLines[-1]}`;
-                }
-            } else {
-                markdownLines.push(text);
-            }
-        } catch (e) {
-            console.error(e);
-            markdownLines.push(JSON.stringify(op));
-        }
-    });
-
-    return markdownLines.join('\n');
-}
 
 function convertDeltaToHtml(delta: Delta): string {
     const converter = new QuillDeltaToHtmlConverter(delta.ops, {});
@@ -224,19 +172,15 @@ export default function Home() {
         ]
     });
 
-    const [markdown, setMarkdown] = useState<string>("empty");
+    // const [markdown, setMarkdown] = useState<string>("empty");
     const [html, setHtml] = useState<string>("");
 
     const handleConvert = () => {
         try {
-            const convertedMarkdown = convertToMarkdown(body);
-            setMarkdown(convertedMarkdown);
-
             const convertedHtml = convertDeltaToHtml(body);
             setHtml(convertedHtml);
         } catch (e) {
             console.error(e);
-            setMarkdown(`error: ${e}`);
             setHtml(`error: ${e}`);
         }
     };
@@ -253,7 +197,6 @@ export default function Home() {
             </div>
             <div className="footer">
                 <button className="button" onClick={handleConvert}>Convert</button>
-                {/* <pre>{markdown}</pre> */}
             </div>
         </div>
     );
