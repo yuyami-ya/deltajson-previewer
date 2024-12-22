@@ -172,12 +172,13 @@ export default function Home() {
         ]
     });
 
-    // const [markdown, setMarkdown] = useState<string>("empty");
     const [html, setHtml] = useState<string>("");
 
     const handleConvert = () => {
         try {
-            const convertedHtml = convertDeltaToHtml(body);
+            // quillサイトで生成されるデルタ形式JSONに対応
+            const deltaBody = Array.isArray(body) ? { ops: body } : body;
+            const convertedHtml = convertDeltaToHtml(deltaBody);
             setHtml(convertedHtml);
         } catch (e) {
             console.error(e);
