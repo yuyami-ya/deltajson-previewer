@@ -187,12 +187,12 @@ export default function Home() {
 
     return (
         <div className="flex flex-col h-screen">
-            <div className="flex-1 flex space-x-4 p-4">
+            <div className="flex-1 flex space-x-4 p-4 overflow-auto">
                 <div className="flex flex-col space-y-1 w-1/2">
                     <label htmlFor="deltaJsonInput">DeltaJson入力欄</label>
                     <textarea
                         id="deltaJsonInput"
-                        className="h-full w-full p-2 border overflow-auto"
+                        className="h-[calc(100vh-200px)] w-full p-2 border overflow-auto"
                         value={JSON.stringify(body, null, 2)}
                         onChange={(e) => setBody(JSON.parse(e.target.value))}
                     />
