@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html';
 import '../styles/markdownStyles.css';
-import '../styles.css';
 
 interface Mention {
     id: string;
@@ -187,17 +186,28 @@ export default function Home() {
     };
 
     return (
-        <div className="container">
-            <div className="editor">
-                <textarea
-                    className="textarea"
-                    value={JSON.stringify(body, null, 2)}
-                    onChange={(e) => setBody(JSON.parse(e.target.value))}
-                />
-                <div className="html-output" dangerouslySetInnerHTML={{ __html: html }} />
+        <div className="flex flex-col h-screen">
+            <div className="flex-1 flex space-x-4 p-4">
+                <div className="flex flex-col space-y-1 w-1/2">
+                    <label htmlFor="deltaJsonInput">DeltaJson入力欄</label>
+                    <textarea
+                        id="deltaJsonInput"
+                        className="h-full w-full p-2 border overflow-auto"
+                        value={JSON.stringify(body, null, 2)}
+                        onChange={(e) => setBody(JSON.parse(e.target.value))}
+                    />
+                </div>
+                <div className="flex flex-col space-y-1 w-1/2">
+                    <label htmlFor="htmlPreview">プレビュー</label>
+                    <div
+                        id="htmlPreview"
+                        className="html-output w-full h-[calc(100vh-200px)] p-2 border overflow-auto"
+                        dangerouslySetInnerHTML={{ __html: html }}
+                    />
+                </div>
             </div>
-            <div className="footer">
-                <button className="button" onClick={handleConvert}>Convert</button>
+            <div className="footer p-4 border-t">
+                <button className="button bg-blue-500 text-white p-2 rounded" onClick={handleConvert}>Convert</button>
             </div>
         </div>
     );
