@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html';
 import '../styles/markdownStyles.css';
+import Head from 'next/head';
 
 interface Mention {
     id: string;
@@ -109,7 +110,7 @@ export default function Home() {
                 }
             },
             {
-                "insert": "Child List 2 Underline style will be reset"
+                "insert": "Child List 2"
             },
             {
                 "insert": "\n",
@@ -163,7 +164,7 @@ export default function Home() {
                 }
             },
             {
-                "insert": "Bold will also be reset"
+                "insert": "Thank you"
             },
             {
                 "insert": "\n"
@@ -186,29 +187,35 @@ export default function Home() {
     };
 
     return (
-        <div className="flex flex-col h-screen">
-            <div className="flex-1 flex space-x-4 p-4 overflow-auto">
-                <div className="flex flex-col space-y-1 w-1/2">
-                    <label htmlFor="deltaJsonInput">DeltaJson入力欄</label>
-                    <textarea
-                        id="deltaJsonInput"
-                        className="h-[calc(100vh-100px)] w-full p-2 border overflow-auto"
-                        value={JSON.stringify(body, null, 2)}
-                        onChange={(e) => setBody(JSON.parse(e.target.value))}
-                    />
+        <>
+            <Head>
+                <title>Delta Json Previewer</title>
+            </Head>
+            <div className="flex flex-col h-screen">
+                <h1 className="text-2xl font-bold p-4">Delta Json Previewer</h1>
+                <div className="flex-1 flex space-x-4 p-4 overflow-auto">
+                    <div className="flex flex-col space-y-1 w-1/2">
+                        <label htmlFor="deltaJsonInput">DeltaJson入力欄</label>
+                        <textarea
+                            id="deltaJsonInput"
+                            className="h-[calc(100vh-100px)] w-full p-2 border overflow-auto"
+                            value={JSON.stringify(body, null, 2)}
+                            onChange={(e) => setBody(JSON.parse(e.target.value))}
+                        />
+                    </div>
+                    <div className="flex flex-col space-y-1 w-1/2">
+                        <label htmlFor="htmlPreview">プレビュー</label>
+                        <div
+                            id="htmlPreview"
+                            className="html-output w-full h-[calc(100vh-100px)] p-2 border overflow-auto"
+                            dangerouslySetInnerHTML={{ __html: html }}
+                        />
+                    </div>
                 </div>
-                <div className="flex flex-col space-y-1 w-1/2">
-                    <label htmlFor="htmlPreview">プレビュー</label>
-                    <div
-                        id="htmlPreview"
-                        className="html-output w-full h-[calc(100vh-100px)] p-2 border overflow-auto"
-                        dangerouslySetInnerHTML={{ __html: html }}
-                    />
+                <div className="footer p-4 border-t">
+                    <button className="button bg-blue-500 text-white p-2 rounded" onClick={handleConvert}>Convert</button>
                 </div>
             </div>
-            <div className="footer p-4 border-t">
-                <button className="button bg-blue-500 text-white p-2 rounded" onClick={handleConvert}>Convert</button>
-            </div>
-        </div>
+        </>
     );
 }
