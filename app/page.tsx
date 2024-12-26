@@ -173,12 +173,14 @@ export default function Home() {
     });
 
     const [html, setHtml] = useState<string>("");
+    const [textAreaValue, setTextAreaValue] = useState<string>(JSON.stringify(body, null, 2));
 
     const handleConvert = () => {
         try {
-            // quillサイトで生成されるデルタ形式JSONに対応
-            const deltaBody = Array.isArray(body) ? { ops: body } : body;
+            const parsedBody = JSON.parse(textAreaValue);
+            const deltaBody = Array.isArray(parsedBody) ? { ops: parsedBody } : parsedBody;
             const convertedHtml = convertDeltaToHtml(deltaBody);
+            setBody(parsedBody);
             setHtml(convertedHtml);
         } catch (e) {
             console.error(e);
@@ -199,8 +201,8 @@ export default function Home() {
                         <textarea
                             id="deltaJsonInput"
                             className="h-[calc(100vh-100px)] w-full p-2 border overflow-auto"
-                            value={JSON.stringify(body, null, 2)}
-                            onChange={(e) => setBody(JSON.parse(e.target.value))}
+                            value={textAreaValue}
+                            onChange={(e) => setTextAreaValue(e.target.value)}
                         />
                     </div>
                     <div className="flex flex-col space-y-1 w-1/2">
