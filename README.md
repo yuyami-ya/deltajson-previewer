@@ -1,6 +1,6 @@
 # デルタJSONからリッチテキストへ変換するアプリ
 
-APP URL
+APP URL<br>
 https://deltajson-previewer-git-main-yuyami-yas-projects.vercel.app/
 
 ## デルタJSONからリッチテキストへ変換
